@@ -41,9 +41,9 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
                     borderRadius: const BorderRadius.all(Radius.circular(30)),
                   ),
                   child: IconButton(onPressed: () {
-                    setState(() {
-                      ref.read(boardManager.notifier).initGame();
-                    });
+                      setState(() {
+                        ref.read(boardManager.notifier).initGame();
+                      });
                     }, icon: const Icon(Icons.refresh),
   
                   ),
@@ -55,10 +55,11 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
                       color: ref.watch(boardManager).grab ? selectedcolor : grabcolor,
                       borderRadius: const BorderRadius.all(Radius.circular(30))
                     ),
-                  child: IconButton(onPressed: () { 
-                    setState(() {
-                      ref.read(boardManager.notifier).SelectButton("grab");
-                    }); 
+                  child: IconButton(onPressed: () {
+                      setState(() {
+                        ref.read(boardManager).grab = !ref.read(boardManager).grab;
+                        ref.read(boardManager).flag = false;
+                      });
                     }, icon: const Icon(Icons.directions_walk),
   
                   )
@@ -68,13 +69,14 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
                 Container(
                     width: 90,height: 50,
                     decoration: BoxDecoration(
-                      color: ref.read(boardManager).flag ? selectedcolor : flagcolor,
+                      color: ref.watch(boardManager).flag ? selectedcolor : flagcolor,
                         borderRadius: const BorderRadius.all(Radius.circular(30))
                     ),
                     child: IconButton(onPressed: () {
-                      setState(() {
-                        ref.read(boardManager.notifier).SelectButton("flag");
-                      });
+                        setState(() {
+                          ref.read(boardManager).flag = !ref.read(boardManager).flag;
+                          ref.read(boardManager).grab = false;
+                        });
                       }, icon: const Icon(Icons.flag),)
                 ),
               ],

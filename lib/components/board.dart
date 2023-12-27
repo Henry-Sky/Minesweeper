@@ -4,9 +4,6 @@ import 'package:minesweeper/components/cell.dart';
 import 'package:minesweeper/colors.dart';
 import 'package:minesweeper/management/gamelogic.dart';
 
-const cellwidth = 32;
-const cellcols = 10;
-const cellrows = 15;
 
 class GameBoard extends ConsumerWidget {
   GameBoard({super.key});
