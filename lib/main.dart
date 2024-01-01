@@ -5,24 +5,19 @@ import 'game.dart';
 void main() {
   runApp(
       const ProviderScope(
-          child: MyApp()
+          child: GameApp()
       )
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
+class GameApp extends StatelessWidget {
+  const GameApp({super.key});
+  // This widget is the root of game application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MineSweeper Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MineSweeper(),
+    return const MaterialApp(
+      title: 'MineSweeper',
+      home: MineSweeper(),
     );
   }
 }

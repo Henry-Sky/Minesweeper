@@ -14,5 +14,7 @@ var selectedcolor = Colors.red;
 
 const boardcolor = Colors.indigo;
 const boardroundcolor = Colors.orange;
-var cellcolor = Colors.grey;
-var cellroundcolor = Colors.black;
+const cellcolor = Colors.grey;
+const cellroundcolor = Colors.black54;
+
+const errorcolor = Colors.black;

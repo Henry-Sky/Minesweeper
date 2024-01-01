@@ -1,92 +1,84 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minesweeper/colors.dart';
+import 'package:minesweeper/theme/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:minesweeper/management/mineboard.dart';
 import 'package:minesweeper/management/gamelogic.dart';
 
-class CellWidget extends ConsumerStatefulWidget{
-  CellWidget({this.row,this.col});
-  late final row;
-  late final col;
+class CellWidget extends ConsumerWidget{
+  const CellWidget({super.key,required this.row, required this.col, required this.refresh});
+  final Function refresh;
+  final int row;
+  final int col;
+  final cellroundwidth = 2.0;
 
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState()
-  => _CellWidget(row: row, col: col);
-}
-
-class _CellWidget extends ConsumerState<CellWidget> {
-  _CellWidget({required this.row,this.col});
-  late final row;
-  late final col;
-
-  @override
-  Widget build(BuildContext context) {
-      switch(ref.watch(boardManager).mineboard[row][col]["state"]){
-        case cellstate.covered:
-          return Container(
-            width: cellwidth, height: cellwidth,
-            decoration: BoxDecoration(
+  Widget build(BuildContext context, WidgetRef ref) {
+    var _cell = ref.watch(boardManager.notifier).getCell(row: row, col: col);
+    switch (_cell["state"]){
+      case cellstate.covered:
+        return Container(
+          width: cellwidth, height: cellwidth,
+          decoration: BoxDecoration(
+            color: cellcolor,
+            border: Border.all(width: cellroundwidth, color: cellroundcolor),
+            borderRadius: BorderRadius.all(Radius.circular(cellroundwidth))
+          ),
+          child: MaterialButton(onPressed: () {
+            if(ref.read(boardManager).grab){
+              ref.read(boardManager.notifier).changeCell(row: row, col: col, state: cellstate.blank);
+              ref.read(boardManager.notifier).checkCell(row: row, col: col);
+              refresh();
+            }else if(ref.read(boardManager).flag){
+              ref.read(boardManager.notifier).changeCell(row: row, col: col, state: cellstate.flag);
+              refresh();
+            }
+          },
+            child: ref.read(boardManager.notifier).checkBlank(row: row, col: col) ?
+            Text(_cell["around"].toString()):null,
+          ),
+        );
+      case cellstate.flag:
+        return Container(
+          width: cellwidth, height: cellwidth,
+          decoration: BoxDecoration(
               color: cellcolor,
-              border: Border.all(width: 2,color: cellroundcolor)
-            ),
-            child: MaterialButton(onPressed: () {
-                if(ref.read(boardManager).grab){
-                  setState(() {
-                    ref.read(boardManager).mineboard[row][col]["state"] = cellstate.blank;
-                  });
-                }else if(ref.read(boardManager).flag){
-                  setState(() {
-                    ref.read(boardManager).mineboard[row][col]["state"] = cellstate.flaged;
-                  });}
-              },
-            ),
+              border: Border.all(width: cellroundwidth, color: cellroundcolor),
+              borderRadius: BorderRadius.all(Radius.circular(cellroundwidth))
+          ),
+          child: Stack(
+            children: [
+              Icon(Icons.flag),
+              MaterialButton(onPressed: () {
+                if(ref.read(boardManager).flag){
+                  ref.read(boardManager.notifier).changeCell(row: row, col: col, state: cellstate.covered);
+                  refresh();
+                }
+              },),
+            ],
+          )
           );
-
-        case cellstate.blank:
-          if(ref.read(boardManager).mineboard[row][col]["mine"]){
-            return Container(
-              width: cellwidth, height: cellwidth,
-              color: boardcolor,
-              child: Icon(Icons.gps_fixed,color: Colors.red,),
-            );
-          }else{
-            setState(() {
-              ref.watch(boardManager).mineboard[row+1<cellrows?row+1:cellrows-1][col]["state"];
-              ref.watch(boardManager).mineboard[row-1>=0?row-1:0][col]["state"]=cellstate.blank;
-            });
-            return Container(
-              width: cellwidth, height: cellwidth,
-              color: boardcolor,
-            );
-          }
-
-        case cellstate.flaged:
+      case cellstate.blank:
+        var _mine = _cell["mine"];
+        if(!_mine) {
           return Container(
-            width: cellwidth, height: cellwidth,
-            decoration: BoxDecoration(
-                color: cellcolor,
-                border: Border.all(width: 2,color: cellroundcolor)
-            ),
-            child: Stack(
-              children: [
-                Icon(Icons.flag),
-                MaterialButton(onPressed: () {
-                  if(ref.read(boardManager).grab){
-                    setState(() {
-                      ref.read(boardManager).mineboard[row][col]["state"] = cellstate.blank;
-                    });
-                  }else if(ref.read(boardManager).flag){
-                    setState(() {
-                      ref.read(boardManager).mineboard[row][col]["state"] = cellstate.covered;
-                    });
-                  }
-                },),
-              ],
-            )
+              width: cellwidth, height: cellwidth, color: boardcolor);
+        }else{
+          ref.read(boardManager).gameover = true;
+          return Container(
+            width: cellwidth, height: cellwidth, color: boardcolor,
+            child: Icon(Icons.gps_fixed)
           );
+        }
+      default:
+        print("Error! the wrong cell state");
+        return Container(width: cellwidth,height: cellwidth,color: errorcolor);
+    }
 
-        default:
-          return Container(width: cellwidth,height: cellwidth);
-      }
+
+
   }
+
+
+
 }

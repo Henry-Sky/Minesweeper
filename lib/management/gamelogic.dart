@@ -1,75 +1,75 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:math';
+import 'mineboard.dart';
 
-const cellwidth = 32.0;
-const cellcols = 10;
-const cellrows = 15;
+final cellwidth = 32.0;
+final boardrows = 15;
+final boardcols = 10;
 
-enum cellstate{
-  covered,
-  blank,
-  flaged,
-}
-
-class BoardLogic extends StateNotifier<BoardStates>{
-  BoardLogic(this.ref) : super(BoardStates());
+class GameLogic extends StateNotifier<GameStates>{
+  GameLogic(this.ref) : super(GameStates());
 
   final StateNotifierProviderRef ref;
+  final int minenums = (boardcols * boardrows * 0.2).floor();
 
   void initGame(){
     state.grab = false;
     state.flag = false;
     state.gameover = false;
-    state.goodgame = false;
-    state.mineboard = newBoard();
-    randomMine(board: state.mineboard);
+    state.board = MineBoard(rows: boardrows, cols: boardcols);
+    state.board.randomMine(num: minenums);
+    print("Game init finished");
   }
 
-  List<List<Map>> newBoard(){
-    return List.generate(cellrows, (row) => List.generate(cellcols,(col) =>
-    {"mine":false, "state":cellstate.covered, "around-mine":0}
-    ));
-  }
-
-  void randomMine({board, num = (cellcols * cellrows * 0.3)}){
-    var cnt = 0;
-    while(cnt < num){
-      var value = Random().nextInt(cellcols * cellrows);
-      var col = value % cellcols;
-      var row = (value / cellrows).floor();
-      if(!state.mineboard[row][col]["mine"]){
-        state.mineboard[row][col]["mine"] = true;
-        addMine(row: row,col: col);
-        cnt += 1;
+  void checkCell({required row, required col}){
+    var dx = [1,0,-1,0];
+    var dy = [0,1,0,-1];
+    for(int i = 0; i < 4; i++){
+      var nextrow = row + dy[i];
+      if(nextrow < 0){nextrow = 0;}
+      if(nextrow >= boardrows){nextrow = boardrows - 1;}
+      var nextcol = col + dx[i];
+      if(nextcol < 0){nextcol = 0;}
+      if(nextcol >= boardcols){nextcol = boardcols - 1;}
+      var _cell = getCell(row: nextrow, col: nextcol);
+      if(!_cell["mine"] && _cell["state"] == cellstate.covered && _cell["around"] == 0){
+        changeCell(row: nextrow, col: nextcol, state: cellstate.blank);
+        checkCell(row: nextrow, col: nextcol);
       }
     }
   }
 
-  void addMine({row,col}){
-    int beginrow = row-1<0 ? 0 : row-1;
-    int endrow = row+1>=cellrows ? cellrows-1 : row+1;
-    int begincol = col-1<0 ? 0 : col-1;
-    int endcol = col+1>=cellcols ? cellcols-1 : col+1;
-    for(int r=beginrow;r<=endrow;r++){
-      for(int c=begincol;c<=endcol;c++){
-        if((r!=row&&c!=col)&&state.mineboard[r][c]["mine"]){
-          state.mineboard[r][c]["around-mine"]+=1;
+  bool checkBlank({required row, required col}){
+    int checkwidth = 1;
+    int beginrow = row - checkwidth < 0 ? 0 : row - checkwidth;
+    int endrow = row + checkwidth >= boardrows ? boardrows - 1 : row + checkwidth;
+    int begincol = col - checkwidth < 0 ? 0 : col - checkwidth;
+    int endcol = col + checkwidth >= boardcols ? boardcols - 1 : col + checkwidth;
+    for(int r = beginrow; r <= endrow; r++){
+      for(int c = begincol; c <= endcol; c++){
+        if(getCell(row: r, col: c)["state"]==cellstate.blank){
+          return true;
         }
       }
     }
+    return false;
   }
 
+  Map getCell({required row, required col}){
+    return state.board.getCell(row: row, col: col);
+  }
 
+  void changeCell({required row, required col, required state}){
+    this.state.board.changeCell(row: row, col: col, state: state);
+  }
 }
 
-class BoardStates{
-  late var grab;
-  late var flag;
-  late List<List<Map>> mineboard;
-  late var gameover; // grab a mine
-  late var goodgame; // clear all mines
+class GameStates{
+  late bool grab;
+  late bool flag;
+  late bool gameover;
+  late MineBoard board;
 }
 
-final boardManager = StateNotifierProvider<BoardLogic, BoardStates>((ref) {
-  return BoardLogic(ref);
+final boardManager = StateNotifierProvider<GameLogic, GameStates>((ref) {
+  return GameLogic(ref);
 });

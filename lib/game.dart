@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'components/board.dart';
 import 'management/gamelogic.dart';
-import 'colors.dart';
+import 'components/gameboard.dart';
+import 'theme/colors.dart';
 
 class MineSweeper extends ConsumerStatefulWidget {
   const MineSweeper({super.key});
@@ -12,6 +12,12 @@ class MineSweeper extends ConsumerStatefulWidget {
 }
 
 class _MineSweeperState extends ConsumerState<MineSweeper> {
+
+  void update(){
+    setState(() {
+      print("global refresh!");
+    });
+  }
 
   @override
   void initState(){
@@ -34,8 +40,9 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // reset button
                 Container(
-                  width: 150,height: 50,
+                  width: 150, height: 50,
                   decoration: BoxDecoration(
                     color: resetcolor,
                     borderRadius: const BorderRadius.all(Radius.circular(30)),
@@ -45,12 +52,12 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
                         ref.read(boardManager.notifier).initGame();
                       });
                     }, icon: const Icon(Icons.refresh),
-  
                   ),
                 ),
-                const SizedBox(width: 15,),
+                const SizedBox(width: 15),
+                // grab button
                 Container(
-                  width: 90,height: 50,
+                  width: 90, height: 50,
                   decoration: BoxDecoration(
                       color: ref.watch(boardManager).grab ? selectedcolor : grabcolor,
                       borderRadius: const BorderRadius.all(Radius.circular(30))
@@ -61,13 +68,12 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
                         ref.read(boardManager).flag = false;
                       });
                     }, icon: const Icon(Icons.directions_walk),
-  
                   )
-  
                 ),
-                const SizedBox(width: 15,),
+                const SizedBox(width: 15),
+                // flag button
                 Container(
-                    width: 90,height: 50,
+                    width: 90, height: 50,
                     decoration: BoxDecoration(
                       color: ref.watch(boardManager).flag ? selectedcolor : flagcolor,
                         borderRadius: const BorderRadius.all(Radius.circular(30))
@@ -77,12 +83,12 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
                           ref.read(boardManager).flag = !ref.read(boardManager).flag;
                           ref.read(boardManager).grab = false;
                         });
-                      }, icon: const Icon(Icons.flag),)
+                      }, icon: const Icon(Icons.flag))
                 ),
               ],
             ),
             Center(
-              child: GameBoard()
+              child: GameBoard(refresh: update)
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
