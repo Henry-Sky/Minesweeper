@@ -4,6 +4,7 @@ import 'management/gamelogic.dart';
 import 'components/gameboard.dart';
 import 'theme/colors.dart';
 
+
 class MineSweeper extends ConsumerStatefulWidget {
   const MineSweeper({super.key});
 
@@ -88,12 +89,51 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
               ],
             ),
             Center(
-              child: GameBoard(refresh: update)
+              child: Stack(
+                  children: [
+                    GameBoard(refresh: update),
+                    ref.read(boardManager).gameover
+                    ? Opacity(opacity: 0.5,
+                        child: Container(
+                          // Todo: reset the size
+                          width:cellwidth * boardcols + 10 ,
+                          height: cellwidth * boardrows + 10,
+                          color: Colors.red,
+                          child: MaterialButton(onPressed: () {
+                            setState(() {
+                              ref.read(boardManager.notifier).initGame();
+                            });
+                            },
+                          child: Text("Game Over!\n Click To Replay",
+                            style: TextStyle(color: Colors.blue,fontSize: 40),),
+                          ),
+                        ),
+                      )
+                    : SizedBox.shrink(),
+                    ref.read(boardManager).goodgame
+                        ? Opacity(opacity: 0.5,
+                      child: Container(
+                        // Todo: reset the size
+                        width:cellwidth * boardcols + 10 ,
+                        height: cellwidth * boardrows + 10,
+                        color: Colors.green,
+                        child: MaterialButton(onPressed: () {
+                          setState(() {
+                            ref.read(boardManager.notifier).initGame();
+                          });
+                        },
+                          child: Text("You Are Win!\n Click To Replay",
+                            style: TextStyle(color: Colors.orange,fontSize: 40),),
+                        ),
+                      ),
+                    )
+                        : SizedBox.shrink(),
+                  ])
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(width: 180,height: 50,color: labelcolor,child: Text("MineSweeper"),),
+                Container(width: 180,height: 50,color: labelcolor,child: Text("MinesSweeper"),),
                 Container(width: 180,height: 50,color: timercolor,child: Text("Timer")),
               ],
             ),

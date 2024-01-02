@@ -1,8 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minesweeper/theme/colors.dart';
-import 'package:flutter/material.dart';
 import 'package:minesweeper/management/mineboard.dart';
 import 'package:minesweeper/management/gamelogic.dart';
+import 'package:minesweeper/theme/colors.dart';
+import 'package:flutter/material.dart';
+
 
 class CellWidget extends ConsumerWidget{
   const CellWidget({super.key,required this.row, required this.col, required this.refresh});
@@ -10,7 +11,6 @@ class CellWidget extends ConsumerWidget{
   final int row;
   final int col;
   final cellroundwidth = 2.0;
-
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,14 +28,23 @@ class CellWidget extends ConsumerWidget{
             if(ref.read(boardManager).grab){
               ref.read(boardManager.notifier).changeCell(row: row, col: col, state: cellstate.blank);
               ref.read(boardManager.notifier).checkCell(row: row, col: col);
+              if(_cell["mine"]){
+                ref.read(boardManager).gameover = true;
+                print("game over!");
+              }else if(ref.read(boardManager.notifier).checkWin()){
+                ref.read(boardManager).goodgame = true;
+                print("good game");
+              }
               refresh();
             }else if(ref.read(boardManager).flag){
               ref.read(boardManager.notifier).changeCell(row: row, col: col, state: cellstate.flag);
               refresh();
             }
           },
-            child: ref.read(boardManager.notifier).checkBlank(row: row, col: col) ?
-            Text(_cell["around"].toString()):null,
+            child: (
+                ref.read(boardManager.notifier).checkBlank(row: row, col: col) &&
+                    ref.read(boardManager.notifier).getCell(row: row, col: col)["around"] != 0
+            ) ? Text(_cell["around"].toString()):null,
           ),
         );
       case cellstate.flag:
@@ -64,21 +73,14 @@ class CellWidget extends ConsumerWidget{
           return Container(
               width: cellwidth, height: cellwidth, color: boardcolor);
         }else{
-          ref.read(boardManager).gameover = true;
           return Container(
             width: cellwidth, height: cellwidth, color: boardcolor,
-            child: Icon(Icons.gps_fixed)
+            child: const Icon(Icons.gps_fixed)
           );
         }
       default:
         print("Error! the wrong cell state");
         return Container(width: cellwidth,height: cellwidth,color: errorcolor);
     }
-
-
-
   }
-
-
-
 }

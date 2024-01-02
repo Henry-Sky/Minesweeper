@@ -20,12 +20,36 @@ class MineBoard{
     print("MineBoard init finished");
   }
 
+  int countState({required state}){
+    var cnt = 0;
+    for(int r = 0;r < rows;r++){
+      for(int c = 0;c < cols;c++){
+        if(board[r][c]["state"] == state){
+          cnt += 1;
+        }
+      }
+    }
+    return cnt;
+  }
+
+  int countMines(){
+    var cnt = 0;
+    for(int r = 0;r < rows;r++){
+      for(int c = 0;c < cols;c++){
+        if(board[r][c]["mine"]){
+          cnt += 1;
+        }
+      }
+    }
+    return cnt;
+  }
+
   void randomMine({required num}){
     var cnt = 0;
     while(cnt < num){
       var value = Random().nextInt(cols * rows);
       var col = value % cols;
-      var row = (value / rows).floor();
+      var row = (value / cols).floor();
       if(!board[row][col]["mine"]){
         board[row][col]["mine"] = true;
         countMine(row: row, col: col); // count as mine created

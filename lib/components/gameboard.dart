@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minesweeper/management/gamelogic.dart';
 import 'package:minesweeper/components/cell.dart';
 import 'package:minesweeper/theme/colors.dart';
-import 'package:minesweeper/management/gamelogic.dart';
+import 'package:flutter/material.dart';
+
 
 class GameBoard extends ConsumerWidget {
   const GameBoard({super.key, required this.refresh});
@@ -33,7 +34,7 @@ class GameBoard extends ConsumerWidget {
               top: row * cellwidth * 1.0,
               child: CellWidget(row: row, col: col, refresh: refresh)
           );}
-        ),
+        )
       ),
     );
   }

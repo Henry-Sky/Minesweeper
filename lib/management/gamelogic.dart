@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'mineboard.dart';
 
+
 final cellwidth = 32.0;
 final boardrows = 15;
 final boardcols = 10;
@@ -15,6 +16,7 @@ class GameLogic extends StateNotifier<GameStates>{
     state.grab = false;
     state.flag = false;
     state.gameover = false;
+    state.goodgame = false;
     state.board = MineBoard(rows: boardrows, cols: boardcols);
     state.board.randomMine(num: minenums);
     print("Game init finished");
@@ -54,6 +56,13 @@ class GameLogic extends StateNotifier<GameStates>{
     return false;
   }
 
+  bool checkWin(){
+    if(state.board.countState(state: cellstate.covered) == state.board.countMines()){
+      return true;
+    }
+    return false;
+  }
+
   Map getCell({required row, required col}){
     return state.board.getCell(row: row, col: col);
   }
@@ -67,6 +76,7 @@ class GameStates{
   late bool grab;
   late bool flag;
   late bool gameover;
+  late bool goodgame;
   late MineBoard board;
 }
 
