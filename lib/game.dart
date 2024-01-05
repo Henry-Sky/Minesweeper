@@ -4,8 +4,8 @@ import 'package:logger/logger.dart';
 import 'package:minesweeper/components/gameinfo.dart';
 import 'management/gamelogic.dart';
 import 'components/gameboard.dart';
+import 'management/gametimer.dart';
 import 'theme/colors.dart';
-import 'dart:async';
 
 
 class MineSweeper extends ConsumerStatefulWidget {
@@ -16,9 +16,7 @@ class MineSweeper extends ConsumerStatefulWidget {
 }
 
 class _MineSweeperState extends ConsumerState<MineSweeper> {
-
-  late final Timer _timer;
-  var cnt = 300;
+  late var timer;
 
   void updateGame(){
     setState(() {
@@ -31,6 +29,7 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
   void resetGame(){
     setState(() {
       ref.read(boardManager.notifier).initGame();
+      timer = GameTimer(time: 180, refresh: updateGame);
     });
   }
 
@@ -38,25 +37,22 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
   void initState(){
     super.initState();
     ref.read(boardManager.notifier).initGame();
-    _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      cnt -= 1;
-      updateGame();
-    });
+    timer = GameTimer(time: 180, refresh: updateGame);
   }
 
   @override
   Widget build(BuildContext context) {
     return
         Scaffold(
-        appBar: AppBar(
-          title: const Text("MineSweeper"),
-          backgroundColor: appbarcolor,
-          actions: [
-            IconButton(
-                onPressed: (){
-                  resetGame();
-                },
-                icon: const Icon(Icons.refresh),
+            appBar: AppBar(
+              title: const Text("MineSweeper"),
+              backgroundColor: appbarcolor,
+              actions: [
+                IconButton(
+                  onPressed: (){
+                    resetGame();
+                    },
+                  icon: const Icon(Icons.refresh),
             )
           ],
         ),
@@ -69,7 +65,7 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
                 child: Stack(
                     children: [
                       GameBoard(refresh: updateGame),
-                      GameInfo(resetGame: resetGame),
+                      GameInfo(resetGame: resetGame, time: timer),
                     ])
             ),
             Row(
@@ -77,23 +73,31 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
               children: [
                 // reset button
                 Container(
-                  width: 160, height: 30,
-                  decoration: const BoxDecoration(
-                    color: resetcolor,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15), bottomLeft: Radius.circular(15))
+                  width: (boardcols * cellwidth + borderwidth * 2) / 2, height: 22,
+                  decoration: BoxDecoration(
+                    color: modecolor,
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(cellroundwidth),
+                        bottomLeft: Radius.circular(cellroundwidth))
                   ),
-                  child: Text("Level: easy")
+                  child: const Text(
+                      "Level: Easy",
+                    textAlign: TextAlign.center,
+                  )
                 ),
                 // The Timer
                 Container(
-                  width: 160, height: 30,
-                  decoration: const BoxDecoration(
-                      color: grabcolor,
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(15), bottomRight: Radius.circular(15))
+                  width: (boardcols * cellwidth + borderwidth * 2) / 2, height: 22,
+                  decoration: BoxDecoration(
+                      color: timercolor,
+                      borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(cellroundwidth),
+                          bottomRight: Radius.circular(cellroundwidth))
                     ),
-                  child: Text("Timer: $cnt")
+                  child: Text(
+                      "Timer: " + timer.getTime(),
+                    textAlign: TextAlign.center,
+                  )
                 ),
               ],
             ),

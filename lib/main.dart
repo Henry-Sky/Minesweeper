@@ -21,5 +21,3 @@ class GameApp extends StatelessWidget {
     );
   }
 }
-
-

@@ -10,7 +10,6 @@ class CellWidget extends ConsumerWidget{
   final Function refresh;
   final int row;
   final int col;
-  final cellroundwidth = 2.0;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,7 +21,7 @@ class CellWidget extends ConsumerWidget{
           decoration: BoxDecoration(
             color: cellcolor,
             border: Border.all(width: cellroundwidth, color: cellroundcolor),
-            borderRadius: BorderRadius.all(Radius.circular(cellroundwidth))
+            borderRadius: const BorderRadius.all(Radius.circular(cellroundwidth))
           ),
           child: MaterialButton(
             onPressed: () {
@@ -49,11 +48,15 @@ class CellWidget extends ConsumerWidget{
           decoration: BoxDecoration(
               color: cellcolor,
               border: Border.all(width: cellroundwidth, color: cellroundcolor),
-              borderRadius: BorderRadius.all(Radius.circular(cellroundwidth))
+              borderRadius: const BorderRadius.all(Radius.circular(cellroundwidth))
           ),
           child: Stack(
             children: [
-              Icon(Icons.flag,color: flagcellcolor),
+              Icon(
+                  Icons.flag,
+                  size: 32,
+                  color: flagcellcolor
+              ),
               MaterialButton(
                 onPressed: () {
                   ref.read(boardManager.notifier).changeCell(
@@ -69,9 +72,7 @@ class CellWidget extends ConsumerWidget{
           return Container(
               width: cellwidth, height: cellwidth, color: boardcolor,
             child: (_cell["around"] != 0)
-            ? Text(_cell["around"].toString(),
-                style: const TextStyle(color: Colors.deepOrange, fontSize: 18),
-                textAlign: TextAlign.center)
+            ? numberText(around: _cell["around"])
             : null,
           );
         }else{
@@ -85,4 +86,33 @@ class CellWidget extends ConsumerWidget{
         return Container(width: cellwidth,height: cellwidth,color: errorcolor);
     }
   }
+}
+
+Widget numberText({required around}){
+  late var numcolor;
+  switch(around){
+    case 1:
+      numcolor = num1color;
+    case 2:
+      numcolor = num2color;
+    case 3:
+      numcolor = num3color;
+    case 4:
+      numcolor = num4color;
+    case 5:
+      numcolor = num5color;
+    case 6:
+      numcolor = num6color;
+    case 7:
+      numcolor = num7color;
+    case 8:
+      numcolor = num8color;
+  }
+  return Text(
+    around.toString(),
+    style: TextStyle(
+        color: numcolor,
+        fontWeight: FontWeight.w900,
+        fontSize: 18),
+    textAlign: TextAlign.center,);
 }

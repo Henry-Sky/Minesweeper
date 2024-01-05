@@ -1,29 +1,35 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minesweeper/management/gamelogic.dart';
+import 'package:minesweeper/management/gametimer.dart';
 import 'package:minesweeper/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class GameInfo extends ConsumerWidget{
-  const GameInfo({super.key, required this.resetGame});
+  const GameInfo({super.key, required this.resetGame, required this.time});
   final Function resetGame;
+  final GameTimer time;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Time Over
+    if(time.getTime() == "00:00"){
+      ref.read(boardManager).gameover = true;
+    }
     // Lost Game
     if(ref.read(boardManager).gameover){
+      time.stopTimer();
       return Opacity(opacity: 0.5,
         child: Container(
-          // Todo: reset the size
-          width:cellwidth * boardcols + 10 ,
-          height: cellwidth * boardrows + 10,
-          color: Colors.red,
+          width: cellwidth * boardcols + borderwidth * 2 ,
+          height: cellwidth * boardrows + borderwidth * 2,
+          color: gameovercolor,
           child: MaterialButton(onPressed: () {
             resetGame();
           },
             child: const Text(
-              "Game Over!\n Click To Replay",
+              "Game Over!\n Click To Restart",
               style: TextStyle(
-                  color: Colors.blue,
+                  color: gameovertextcolor,
                   fontSize: 40),
             ),
           ),
@@ -32,19 +38,20 @@ class GameInfo extends ConsumerWidget{
     }
     // Win Game
     else if(ref.read(boardManager).goodgame){
-      Opacity(opacity: 0.5,
+      var wintime = time.getWintime();
+      time.stopTimer();
+      return Opacity(opacity: 0.5,
         child: Container(
-          // Todo: reset the size
-          width:cellwidth * boardcols + 10 ,
-          height: cellwidth * boardrows + 10,
-          color: Colors.green,
+          width: cellwidth * boardcols + borderwidth * 2 ,
+          height: cellwidth * boardrows + borderwidth * 2,
+          color: goodgamecolor,
           child: MaterialButton(onPressed: () {
             resetGame();
           },
-            child: const Text(
-              "You Are Win!\n Click To Replay",
-              style: TextStyle(
-                  color: Colors.orange,
+            child: Text(
+              " You Win!\n Time: $wintime \n Click To Replay",
+              style: const TextStyle(
+                  color: goodgametextcolor,
                   fontSize: 40),
             ),
           ),
@@ -55,7 +62,5 @@ class GameInfo extends ConsumerWidget{
     else{
       return const SizedBox.shrink();
     }
-    // Default
-    return const SizedBox.shrink();
   }
 }
