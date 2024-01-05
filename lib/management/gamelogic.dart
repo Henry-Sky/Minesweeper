@@ -1,10 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'mineboard.dart';
 
 
-final cellwidth = 32.0;
-final boardrows = 15;
-final boardcols = 10;
+// Debug Tool
+const kDebugMode = true;
+final logger = Logger();
+
+// Board Size
+const cellwidth = 40.0;
+const boardrows = 15;
+const boardcols = 8;
+
 
 class GameLogic extends StateNotifier<GameStates>{
   GameLogic(this.ref) : super(GameStates());
