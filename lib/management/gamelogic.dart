@@ -10,7 +10,7 @@ class GameLogic extends StateNotifier<GameStates>{
   GameLogic(this.ref) : super(GameStates());
 
   final StateNotifierProviderRef ref;
-  final int minenums = (boardcols * boardrows * 0.2).floor();
+  final int minenums = (boardcols * boardrows * 0.15).floor();
 
   void initGame(){
     state.grab = false;
@@ -33,9 +33,11 @@ class GameLogic extends StateNotifier<GameStates>{
       if(nextcol < 0){nextcol = 0;}
       if(nextcol >= boardcols){nextcol = boardcols - 1;}
       var _cell = getCell(row: nextrow, col: nextcol);
-      if(!_cell["mine"] && _cell["state"] == cellstate.covered && _cell["around"] == 0){
+      if(_cell["state"] == cellstate.covered && _cell["around"] == 0){
         changeCell(row: nextrow, col: nextcol, state: cellstate.blank);
         checkCell(row: nextrow, col: nextcol);
+      }else if(!_cell["mine"] && _cell["state"] == cellstate.covered && _cell["around"] != 0){
+        changeCell(row: nextrow, col: nextcol, state: cellstate.blank);
       }
     }
   }

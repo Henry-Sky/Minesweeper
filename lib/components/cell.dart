@@ -40,12 +40,7 @@ class CellWidget extends ConsumerWidget{
               ref.read(boardManager.notifier).changeCell(row: row, col: col, state: cellstate.flag);
               refresh();
             }
-          },
-            child: (
-                ref.read(boardManager.notifier).checkBlank(row: row, col: col) &&
-                    ref.read(boardManager.notifier).getCell(row: row, col: col)["around"] != 0
-            ) ? Text(_cell["around"].toString()):null,
-          ),
+          },),
         );
       case cellstate.flag:
         return Container(
@@ -57,10 +52,11 @@ class CellWidget extends ConsumerWidget{
           ),
           child: Stack(
             children: [
-              Icon(Icons.flag),
+              Icon(Icons.flag,color: flagcellcolor),
               MaterialButton(onPressed: () {
                 if(ref.read(boardManager).flag){
-                  ref.read(boardManager.notifier).changeCell(row: row, col: col, state: cellstate.covered);
+                  ref.read(boardManager.notifier).changeCell(
+                      row: row, col: col, state: cellstate.covered);
                   refresh();
                 }
               },),
@@ -71,15 +67,21 @@ class CellWidget extends ConsumerWidget{
         var _mine = _cell["mine"];
         if(!_mine) {
           return Container(
-              width: cellwidth, height: cellwidth, color: boardcolor);
+              width: cellwidth, height: cellwidth, color: boardcolor,
+            child: (_cell["around"] != 0)
+            ? Text(_cell["around"].toString(),
+                style: TextStyle(color: Colors.deepOrange, fontSize: 18),
+                textAlign: TextAlign.center)
+            : null,
+          );
         }else{
           return Container(
             width: cellwidth, height: cellwidth, color: boardcolor,
-            child: const Icon(Icons.gps_fixed)
+            child: const Icon(Icons.gps_fixed,color: minecellcolor,)
           );
         }
       default:
-        print("Error! the wrong cell state");
+        print("Error! wrong cell state");
         return Container(width: cellwidth,height: cellwidth,color: errorcolor);
     }
   }

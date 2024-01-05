@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'management/gamelogic.dart';
 import 'components/gameboard.dart';
 import 'theme/colors.dart';
+import 'dart:async';
 
 
 class MineSweeper extends ConsumerStatefulWidget {
@@ -31,7 +32,7 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
     return
         Scaffold(
         appBar: AppBar(
-          title: const Text("MinesSweeper"),
+          title: const Text("MineSweeper"),
           backgroundColor: appbarcolor,
         ),
         backgroundColor: backgroundcolor,
@@ -133,7 +134,7 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(width: 180,height: 50,color: labelcolor,child: Text("MinesSweeper"),),
+                Container(width: 180,height: 50,color: labelcolor,child: Text("MineSweeper"),),
                 Container(width: 180,height: 50,color: timercolor,child: Text("Timer")),
               ],
             ),
