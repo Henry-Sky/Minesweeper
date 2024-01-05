@@ -17,6 +17,9 @@ class MineSweeper extends ConsumerStatefulWidget {
 
 class _MineSweeperState extends ConsumerState<MineSweeper> {
 
+  late final Timer _timer;
+  var cnt = 300;
+
   void updateGame(){
     setState(() {
       if (kDebugMode) {
@@ -35,6 +38,10 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
   void initState(){
     super.initState();
     ref.read(boardManager.notifier).initGame();
+    _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+      cnt -= 1;
+      updateGame();
+    });
   }
 
   @override
@@ -58,62 +65,37 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            Center(
+                child: Stack(
+                    children: [
+                      GameBoard(refresh: updateGame),
+                      GameInfo(resetGame: resetGame),
+                    ])
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // reset button
                 Container(
-                  width: 150, height: 35,
+                  width: 160, height: 30,
                   decoration: const BoxDecoration(
                     color: resetcolor,
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15), bottomLeft: Radius.circular(15))
                   ),
-                  child: IconButton(onPressed: () {
-                      setState(() {
-                        ref.read(boardManager.notifier).initGame();
-                      });
-                    }, icon: const Icon(Icons.refresh),
-                  ),
+                  child: Text("Level: easy")
                 ),
-                const SizedBox(width: 15),
-                // grab button
+                // The Timer
                 Container(
-                  width: 90, height: 35,
-                  decoration: BoxDecoration(
-                      color: ref.watch(boardManager).grab ? selectedcolor : grabcolor,
-                      borderRadius: const BorderRadius.all(Radius.circular(30))
+                  width: 160, height: 30,
+                  decoration: const BoxDecoration(
+                      color: grabcolor,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(15), bottomRight: Radius.circular(15))
                     ),
-                  child: IconButton(onPressed: () {
-                      setState(() {
-                        ref.read(boardManager).grab = !ref.read(boardManager).grab;
-                        ref.read(boardManager).flag = false;
-                      });
-                    }, icon: const Icon(Icons.directions_walk),
-                  )
-                ),
-                const SizedBox(width: 15),
-                // flag button
-                Container(
-                    width: 90, height: 35,
-                    decoration: BoxDecoration(
-                      color: ref.watch(boardManager).flag ? selectedcolor : flagcolor,
-                        borderRadius: const BorderRadius.all(Radius.circular(30))
-                    ),
-                    child: IconButton(onPressed: () {
-                        setState(() {
-                          ref.read(boardManager).flag = !ref.read(boardManager).flag;
-                          ref.read(boardManager).grab = false;
-                        });
-                      }, icon: const Icon(Icons.flag))
+                  child: Text("Timer: $cnt")
                 ),
               ],
-            ),
-            Center(
-              child: Stack(
-                  children: [
-                    GameBoard(refresh: updateGame),
-                    GameInfo(resetGame: resetGame),
-                  ])
             ),
           ],
         )
