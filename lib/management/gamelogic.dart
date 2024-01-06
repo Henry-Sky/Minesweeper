@@ -9,7 +9,8 @@ final logger = Logger();
 
 // Board Size
 const cellwidth = 40.0;
-const cellroundwidth = 2.0;
+const cellroundscale = 20.0;
+
 const boardrows = 15;
 const boardcols = 8;
 const borderwidth = 5.0;
