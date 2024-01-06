@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import '../management/mineboard.dart';
 import '../management/gamelogic.dart';
 import '../theme/colors.dart';
@@ -29,10 +30,14 @@ class CellWidget extends ConsumerWidget{
                 ref.read(boardManager.notifier).checkCell(row: row, col: col);
                 if(_cell["mine"]){
                   ref.read(boardManager).gameover = true;
-                  print("game over!");
+                  if (kDebugMode) {
+                    logger.log(Level.info, "Game Over!");
+                  }
                 }else if(ref.read(boardManager.notifier).checkWin()){
                   ref.read(boardManager).goodgame = true;
-                  print("good game");
+                  if (kDebugMode) {
+                    logger.log(Level.info, "Good Game!");
+                  }
                 }
                 refresh();
               },
@@ -72,18 +77,20 @@ class CellWidget extends ConsumerWidget{
           return Container(
               width: cellwidth, height: cellwidth, color: boardcolor,
             child: (_cell["around"] != 0)
-            ? numberText(around: _cell["around"])
-            : null,
+                ? numberText(around: _cell["around"])
+                : null,
           );
         }else{
           return Container(
             width: cellwidth, height: cellwidth, color: boardcolor,
-            child: Icon(Icons.gps_fixed,color: minecellcolor,)
+            child: Icon(Icons.gps_fixed, color: minecellcolor,)
           );
         }
       default:
-        print("Error! wrong cell state");
-        return Container(width: cellwidth,height: cellwidth,color: errorcolor);
+        if (kDebugMode) {
+          logger.log(Level.error, "Wrong Cell State");
+        }
+        return Container(width: cellwidth, height: cellwidth, color: errorcolor);
     }
   }
 }
@@ -107,12 +114,14 @@ Widget numberText({required around}){
       numcolor = num7color;
     case 8:
       numcolor = num8color;
+    default:
+      numcolor = errorcolor;
   }
   return Text(
     around.toString(),
     style: TextStyle(
         color: numcolor,
         fontWeight: FontWeight.w900,
-        fontSize: 18),
+        fontSize: 28),
     textAlign: TextAlign.center,);
 }
