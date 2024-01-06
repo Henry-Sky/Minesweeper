@@ -1,4 +1,4 @@
-import 'package:minesweeper/management/gamelogic.dart';
+import '../management/gamelogic.dart';
 import 'package:logger/logger.dart';
 import 'dart:math';
 
@@ -29,7 +29,9 @@ class MineBoard{
     var cnt = 0;
     for(int r = 0;r < rows;r++){
       for(int c = 0;c < cols;c++){
-        if(board[r][c]["state"] == state){cnt += 1;}
+        if(board[r][c]["state"] == state){
+          cnt += 1;
+        }
       }
     }
     return cnt;
@@ -43,7 +45,9 @@ class MineBoard{
     var cnt = 0;
     for(int r = 0;r < rows;r++){
       for(int c = 0;c < cols;c++){
-        if(board[r][c]["mine"]){cnt += 1;}
+        if(board[r][c]["mine"]){
+          cnt += 1;
+        }
       }
     }
     return cnt;

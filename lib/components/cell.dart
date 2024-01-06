@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minesweeper/management/mineboard.dart';
-import 'package:minesweeper/management/gamelogic.dart';
-import 'package:minesweeper/theme/colors.dart';
+import '../management/mineboard.dart';
+import '../management/gamelogic.dart';
+import '../theme/colors.dart';
 import 'package:flutter/material.dart';
 
 
@@ -78,7 +78,7 @@ class CellWidget extends ConsumerWidget{
         }else{
           return Container(
             width: cellwidth, height: cellwidth, color: boardcolor,
-            child: const Icon(Icons.gps_fixed,color: minecellcolor,)
+            child: Icon(Icons.gps_fixed,color: minecellcolor,)
           );
         }
       default:

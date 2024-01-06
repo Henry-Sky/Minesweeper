@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:minesweeper/components/gameinfo.dart';
+import 'components/gameinfo.dart';
 import 'management/gamelogic.dart';
 import 'components/gameboard.dart';
 import 'management/gametimer.dart';
@@ -46,7 +46,6 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
         Scaffold(
             appBar: AppBar(
               title: const Text("MineSweeper"),
-              backgroundColor: appbarcolor,
               actions: [
                 IconButton(
                   onPressed: (){
