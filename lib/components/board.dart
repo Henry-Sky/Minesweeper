@@ -28,10 +28,14 @@ class GameBoard extends ConsumerWidget {
         children: List.generate(boardrows * boardcols, (i) {
           var col = i % boardcols;
           var row = (i / boardcols).floor();
-          return Positioned(
+          return Stack(
+            children: [
+              Positioned(
               left: col * cellwidth * 1.0,
-              top: row * cellwidth * 1.0,
-              child: CellWidget(row: row, col: col, refresh: refresh)
+                  top: row * cellwidth * 1.0,
+                  child: CellWidget(row: row, col: col, refresh: refresh)
+              ),
+            ],
           );}
         )
       ),

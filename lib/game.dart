@@ -33,6 +33,7 @@ class _MineSweeperState extends ConsumerState<MineSweeper>
     setState(() {
       ref.read(boardManager.notifier).initGame();
       // ReCreate Timer When Game Reset
+      timer.stopTimer();
       timer = GameTimer(time: 180, refresh: updateGame);
     });
   }

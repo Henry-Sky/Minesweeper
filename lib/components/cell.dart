@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import '../management/mineboard.dart';
 import '../management/gamelogic.dart';
 import '../theme/colors.dart';
@@ -65,27 +64,43 @@ class CellWidget extends ConsumerWidget{
   }
 
   Widget widgetFlag({required visible}){
-    return Opacity(
-      opacity: visible ? 1 : 0,
-      child: Icon(
-        Icons.flag,
-        color: flagcellcolor,
-        size: 35,
-      ),
+    const _duration = Duration(seconds: 1);
+    const _curve = Curves.ease;
+
+    return AnimatedPositioned(
+      left: 0,
+      top: visible ? 0 : -50,
+      duration: _duration,
+      curve: _curve,
+        child: AnimatedOpacity(
+            opacity: visible ? 1 : 0,
+            duration: _duration,
+            curve: _curve,
+          child: AnimatedScale(
+            scale: visible ? 1 : 0.2,
+            duration: _duration,
+            curve: _curve,
+            child: Icon(
+              Icons.flag,
+              size: 40,
+              color: flagcellcolor,
+            ),
+          )
+        ),
     );
   }
 
   Widget widgetCover({required visible}){
     return AnimatedOpacity(
       opacity: visible ? 1 : 0,
-      curve: Curves.linear,
-      duration: Duration(milliseconds: 300),
+      curve: Curves.ease,
+      duration: const Duration(milliseconds: 1000),
       child: Container(
         width: cellwidth, height: cellwidth,
         decoration: BoxDecoration(
           color: cellcolor,
-          border: Border.all(width: 2),
-          borderRadius: BorderRadius.all(Radius.circular(2)),
+          border: Border.all(width: 1),
+          borderRadius: const BorderRadius.all(Radius.circular(2)),
         ),
       ),
     );

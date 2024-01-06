@@ -25,11 +25,14 @@ class GameLogic extends StateNotifier<GameStates>{
     state.gameover = false;
     state.goodgame = false;
     state.board = MineBoard(rows: boardrows, cols: boardcols);
-    state.board.randomMine(num: minenums);
+
     print("Game init finished");
   }
 
   void checkCell({required row, required col}){
+    if(state.board.countState(state: cellstate.blank) == 1){
+      state.board.randomMine(num: minenums, clickrow: row, clickcol: col);
+    }
     var dx = [1,0,-1,0];
     var dy = [0,1,0,-1];
     for(int i = 0; i < 4; i++){
