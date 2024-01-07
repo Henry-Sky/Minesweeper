@@ -6,6 +6,7 @@ final timerColor = Colors.blue[300];
 final backgroundColor = Colors.indigo[50];
 final boardColor = Colors.indigo[100];
 const boardBorderColor = Colors.yellow;
+const crazyColor = Colors.redAccent;
 
 // GameInfo Color
 final gameOverColor = Colors.red[600];

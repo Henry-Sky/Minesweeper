@@ -21,13 +21,13 @@ class CellWidget extends ConsumerWidget{
     late final bool flagCell;
 
     switch(cell.state){
-      case cellstate.blank:
+      case CellState.blank:
         coverCell = false;
         flagCell = false;
-      case cellstate.covered:
+      case CellState.covered:
         coverCell = true;
         flagCell = false;
-      case cellstate.flag:
+      case CellState.flag:
         coverCell = true;
         flagCell = true;
       default:
@@ -57,7 +57,7 @@ class CellWidget extends ConsumerWidget{
           onPressed: () {
             // Click a Cover Cell => Blank
             if(!flaged){
-              ref.read(boardManager.notifier).changeCell(row: row, col: col, state: cellstate.blank);
+              ref.read(boardManager.notifier).changeCell(row: row, col: col, state: CellState.blank);
               ref.read(boardManager.notifier).checkRoundCell(row: row, col: col);
               // Check Game State
               if (cell.mine) {
@@ -69,12 +69,12 @@ class CellWidget extends ConsumerWidget{
             }
             // Click a Flag Cell => Cancel Flag (Covered)
             else{
-              ref.read(boardManager.notifier).changeCell(row: row, col: col, state: cellstate.covered);
+              ref.read(boardManager.notifier).changeCell(row: row, col: col, state: CellState.covered);
               reFresh();
             }
           },
           onLongPress: () {
-            ref.read(boardManager.notifier).changeCell(row: row, col: col, state: cellstate.flag);
+            ref.read(boardManager.notifier).changeCell(row: row, col: col, state: CellState.flag);
             reFresh();
           },
         ),

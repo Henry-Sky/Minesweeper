@@ -36,7 +36,7 @@ class GameLogic extends StateNotifier<GameStates>{
 
   void checkRoundCell({required row, required col}){
     if(firstClick){
-      state.board.randomMine(num: mineNum, clickrow: row, clickcol: col);
+      state.board.randomMine(number: mineNum, clickrow: row, clickcol: col);
       firstClick = false;
     }
     var dx = [1, 0, -1, 0];
@@ -51,18 +51,18 @@ class GameLogic extends StateNotifier<GameStates>{
       // Get the next pose cell state
       Cell cell = getCell(row: nextRow, col: nextCol);
       // Check the next cell
-      if(cell.state == cellstate.covered && cell.around == 0){
-        changeCell(row: nextRow, col: nextCol, state: cellstate.blank);
+      if(cell.state == CellState.covered && cell.around == 0){
+        changeCell(row: nextRow, col: nextCol, state: CellState.blank);
         checkRoundCell(row: nextRow, col: nextCol);
-      }else if(!cell.mine && cell.state == cellstate.covered && cell.around != 0){
-        changeCell(row: nextRow, col: nextCol, state: cellstate.blank);
+      }else if(!cell.mine && cell.state == CellState.covered && cell.around != 0){
+        changeCell(row: nextRow, col: nextCol, state: CellState.blank);
       }
     }
   }
 
   bool checkWin(){
-    var coveredCells = state.board.countState(state: cellstate.covered);
-    var flagCells = state.board.countState(state: cellstate.flag);
+    var coveredCells = state.board.countState(state: CellState.covered);
+    var flagCells = state.board.countState(state: CellState.flag);
     var mineCells = state.board.countMines();
     if (kDebugMode) {
       logger.log(

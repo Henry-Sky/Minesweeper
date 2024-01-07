@@ -17,6 +17,7 @@ class Minesweeper extends ConsumerStatefulWidget {
 
 class _MinesweeperState extends ConsumerState<Minesweeper> {
   late GameTimer timer;
+  final int timerValue = 180;
 
   void updateGame() {
     setState(() {
@@ -35,7 +36,7 @@ class _MinesweeperState extends ConsumerState<Minesweeper> {
     setState(() {
       ref.read(boardManager.notifier).initGame();
       // ReCreate Timer When Game Reset
-      timer = GameTimer(timeStart: 180, reFresh: updateGame);
+      timer = GameTimer(timeStart: timerValue, reFresh: updateGame);
     });
   }
 
@@ -44,7 +45,7 @@ class _MinesweeperState extends ConsumerState<Minesweeper> {
     super.initState();
     ref.read(boardManager.notifier).initGame();
     // Create Timer
-    timer = GameTimer(timeStart: 180, reFresh: updateGame);
+    timer = GameTimer(timeStart: timerValue, reFresh: updateGame);
   }
 
   @override
@@ -71,8 +72,8 @@ class _MinesweeperState extends ConsumerState<Minesweeper> {
           children: [
             Center(
                 child: Stack(children: [
-                  GameBoard(reFresh: updateGame),
-                  GameInfo(resetGame: resetGame, time: timer),
+                  GameBoard(reFresh: updateGame, timer: timer),
+                  GameInfo(resetGame: resetGame, timer: timer),
                 ])
             ),
             Row(
@@ -97,11 +98,11 @@ class _MinesweeperState extends ConsumerState<Minesweeper> {
                     )
                 ),
                 // The Timer
-                Container(
+                AnimatedContainer(
                     width: boardWidth / 2,
                     height: 22,
                     decoration: BoxDecoration(
-                        color: timerColor,
+                        color: timer.checkHalfTime() ? crazyColor :timerColor,
                         borderRadius: const BorderRadius.only(
                             topRight:
                                 Radius.circular(cellRadius),
@@ -109,6 +110,7 @@ class _MinesweeperState extends ConsumerState<Minesweeper> {
                                 Radius.circular(cellRadius),
                         ),
                     ),
+                    duration: Durations.extralong4,
                     child: Text(
                       "Timer: ${timer.getTime()}",
                       textAlign: TextAlign.center,

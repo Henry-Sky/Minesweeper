@@ -3,7 +3,7 @@ import "package:flutter/foundation.dart";
 import 'package:logger/logger.dart';
 import 'dart:math';
 
-enum cellstate{
+enum CellState{
   covered,
   blank,
   flag,
@@ -11,7 +11,7 @@ enum cellstate{
 
 class Cell{
   bool mine = false;
-  cellstate state = cellstate.covered;
+  CellState state = CellState.covered;
   int around = 0;
 }
 
@@ -57,10 +57,10 @@ class MineBoard{
     }
   }
 
-  void randomMine({required num, required clickrow, required clickcol}){
-    mines = num;
+  void randomMine({required number, required clickrow, required clickcol}){
+    mines = number;
     var cnt = 0;
-    while(cnt < num){
+    while(cnt < number){
       var value = Random().nextInt(cols * rows);
       var col = value % cols;
       var row = (value / cols).floor();

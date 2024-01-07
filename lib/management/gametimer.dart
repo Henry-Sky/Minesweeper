@@ -22,6 +22,10 @@ class GameTimer {
     _timer.cancel();
   }
 
+  bool checkHalfTime(){
+    return timeCnt < timeStart/2;
+  }
+
   String getTime() {
     int minute = (timeCnt / 60).floor();
     int second = timeCnt % 60;
