@@ -16,8 +16,8 @@ class GameApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'MineSweeper',
-      home: MineSweeper(),
+      title: 'Minesweeper',
+      home: Minesweeper(),
     );
   }
 }

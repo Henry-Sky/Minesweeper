@@ -1,32 +1,32 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
 import '../management/gamelogic.dart';
 import '../management/gametimer.dart';
 import '../theme/colors.dart';
-import 'package:flutter/material.dart';
 
 class GameInfo extends ConsumerWidget{
   const GameInfo({super.key, required this.resetGame, required this.time});
-  final Function resetGame;
+  final void Function() resetGame;
   final GameTimer time;
-  final opacityvalue = 0.8;
+  final double opacityValue = 0.8;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Time Over
     if(time.getTime() == "00:00"){
-      ref.read(boardManager).gameover = true;
+      ref.read(boardManager).gameOver = true;
     }
     // Lost Game
-    if(ref.read(boardManager).gameover){
+    if(ref.read(boardManager).gameOver){
       time.stopTimer();
       return Opacity(
-        opacity: opacityvalue,
+        opacity: opacityValue,
         child: Container(
-          width: cellwidth * boardcols + borderwidth * 2 ,
-          height: cellwidth * boardrows + borderwidth * 2,
+          width: cellWidth * boardCols + borderWidth * 2 ,
+          height: cellWidth * boardRows + borderWidth * 2,
           decoration: BoxDecoration(
-              color: gameovercolor,
-              borderRadius: const BorderRadius.all(Radius.circular(borderwidth))
+              color: gameOverColor,
+              borderRadius: const BorderRadius.all(Radius.circular(borderWidth))
           ),
           child: MaterialButton(
             onPressed: () {
@@ -35,7 +35,7 @@ class GameInfo extends ConsumerWidget{
             child: Text(
               "Game Over!\n Click To Restart",
               style: TextStyle(
-                  color: gameovertextcolor,
+                  color: gameOverTextColor,
                   fontSize: 40),
             ),
           ),
@@ -43,17 +43,20 @@ class GameInfo extends ConsumerWidget{
       );
     }
     // Win Game
-    else if(ref.read(boardManager).goodgame){
-      var wintime = time.getWintime();
+    else if(ref.read(boardManager).goodGame){
+      // The Cost Time Should Be Counted Before Timer Stop
+      String wintime = time.getTimeCost();
       time.stopTimer();
       return Opacity(
-        opacity: opacityvalue,
+        opacity: opacityValue,
         child: Container(
-          width: cellwidth * boardcols + borderwidth * 2 ,
-          height: cellwidth * boardrows + borderwidth * 2,
+          width: cellWidth * boardCols + borderWidth * 2 ,
+          height: cellWidth * boardRows + borderWidth * 2,
           decoration: BoxDecoration(
-            color: goodgamecolor,
-            borderRadius: const BorderRadius.all(Radius.circular(borderwidth))
+            color: goodGameColor,
+            borderRadius: const BorderRadius.all(
+                Radius.circular(borderWidth),
+            )
           ),
           child: MaterialButton(
             onPressed: () {
@@ -62,8 +65,9 @@ class GameInfo extends ConsumerWidget{
             child: Text(
               " You Win!\n Time: $wintime \n Click To Replay",
               style: TextStyle(
-                  color: goodgametextcolor,
-                  fontSize: 40),
+                  color: goodGameTextColor,
+                  fontSize: 40
+              ),
             ),
           ),
         ),

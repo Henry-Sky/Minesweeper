@@ -1,30 +1,30 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'components/gameinfo.dart';
+import 'components/info.dart';
 import 'management/gamelogic.dart';
 import 'components/board.dart';
 import "package:flutter/foundation.dart";
 import 'management/gametimer.dart';
 import 'theme/colors.dart';
 
-class MineSweeper extends ConsumerStatefulWidget {
-  const MineSweeper({super.key});
+class Minesweeper extends ConsumerStatefulWidget {
+  const Minesweeper({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _MineSweeperState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MinesweeperState();
 }
 
-class _MineSweeperState extends ConsumerState<MineSweeper> {
+class _MinesweeperState extends ConsumerState<Minesweeper> {
   late GameTimer timer;
 
   void updateGame() {
     setState(() {
       if (kDebugMode) {
-        ref.read(boardManager).gameover
+        ref.read(boardManager).gameOver
             ? logger.log(Level.info, "Game Over!")
             : null;
-        ref.read(boardManager).goodgame
+        ref.read(boardManager).goodGame
             ? logger.log(Level.info, "Good Game!")
             : null;
       }
@@ -35,8 +35,7 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
     setState(() {
       ref.read(boardManager.notifier).initGame();
       // ReCreate Timer When Game Reset
-      timer.stopTimer();
-      timer = GameTimer(timestart: 180, refresh: updateGame);
+      timer = GameTimer(timeStart: 180, reFresh: updateGame);
     });
   }
 
@@ -45,7 +44,7 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
     super.initState();
     ref.read(boardManager.notifier).initGame();
     // Create Timer
-    timer = GameTimer(timestart: 180, refresh: updateGame);
+    timer = GameTimer(timeStart: 180, reFresh: updateGame);
   }
 
   @override
@@ -66,55 +65,59 @@ class _MineSweeperState extends ConsumerState<MineSweeper> {
             )
           ],
         ),
-        backgroundColor: backgroundcolor,
+        backgroundColor: backgroundColor,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Center(
                 child: Stack(children: [
-                  GameBoard(refresh: updateGame),
+                  GameBoard(reFresh: updateGame),
                   GameInfo(resetGame: resetGame, time: timer),
-            ])),
+                ])
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // reset button
                 Container(
-                    width: boardwidth / 2,
+                    width: boardWidth / 2,
                     height: 22,
                     decoration: BoxDecoration(
-                        color: modecolor,
+                        color: modeColor,
                         borderRadius: const BorderRadius.only(
                             topLeft:
-                                Radius.circular(cellwidth / cellroundscale),
+                                Radius.circular(cellRadius),
                             bottomLeft:
-                                Radius.circular(cellwidth / cellroundscale),
+                                Radius.circular(cellRadius),
                         ),
                     ),
                     child: const Text(
                       "Level: Easy",
                       textAlign: TextAlign.center,
-                    )),
+                    )
+                ),
                 // The Timer
                 Container(
-                    width: boardwidth / 2,
+                    width: boardWidth / 2,
                     height: 22,
                     decoration: BoxDecoration(
-                        color: timercolor,
+                        color: timerColor,
                         borderRadius: const BorderRadius.only(
                             topRight:
-                                Radius.circular(cellwidth / cellroundscale),
+                                Radius.circular(cellRadius),
                             bottomRight:
-                                Radius.circular(cellwidth / cellroundscale),
+                                Radius.circular(cellRadius),
                         ),
                     ),
                     child: Text(
                       "Timer: ${timer.getTime()}",
                       textAlign: TextAlign.center,
-                    )),
+                    )
+                ),
               ],
             ),
           ],
-        ));
+        )
+    );
   }
 }

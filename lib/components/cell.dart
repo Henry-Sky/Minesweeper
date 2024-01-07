@@ -8,27 +8,27 @@ import '../theme/colors.dart';
 
 
 class CellWidget extends ConsumerWidget{
-  const CellWidget({super.key, required this.row, required this.col, required this.refresh});
-  final void Function() refresh;
+  const CellWidget({super.key, required this.row, required this.col, required this.reFresh});
+  final void Function() reFresh;
   final int row;
   final int col;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final Cell _cell = ref.watch(boardManager.notifier).getCell(row: row, col: col);
-    late final _covered;
-    late final _flaged;
+    final Cell cell = ref.watch(boardManager.notifier).getCell(row: row, col: col);
+    late final bool coverCell;
+    late final bool flagCell;
 
-    switch(_cell.state){
+    switch(cell.state){
       case cellstate.blank:
-        _covered = false;
-        _flaged = false;
+        coverCell = false;
+        flagCell = false;
       case cellstate.covered:
-        _covered = true;
-        _flaged = false;
+        coverCell = true;
+        flagCell = false;
       case cellstate.flag:
-        _covered = true;
-        _flaged = true;
+        coverCell = true;
+        flagCell = true;
       default:
         if (kDebugMode) {
           logger.log(Level.error, "Wrong Cell State");
@@ -37,10 +37,10 @@ class CellWidget extends ConsumerWidget{
 
     return Stack(
       children: [
-        widgetBlank(cell: _cell),
-        widgetCover(visible: _covered),
-        widgetFlag(visible: _flaged),
-        widgetButton(cell: _cell, covered: _covered, flaged: _flaged, ref: ref),
+        widgetBlank(cell: cell),
+        widgetCover(visible: coverCell),
+        widgetFlag(visible: flagCell),
+        widgetButton(cell: cell, covered: coverCell, flaged: flagCell, ref: ref),
       ],
     );
   }
@@ -48,26 +48,30 @@ class CellWidget extends ConsumerWidget{
   Widget widgetButton({required Cell cell, required bool covered, required bool flaged, required ref}){
     if(covered){
       return SizedBox(
-        width: cellwidth, height: cellwidth,
+        width: cellWidth, height: cellWidth,
         child: MaterialButton(
           onPressed: () {
+            // Click a Cover Cell => Blank
             if(!flaged){
               ref.read(boardManager.notifier).changeCell(row: row, col: col, state: cellstate.blank);
-              ref.read(boardManager.notifier).checkCell(row: row, col: col);
+              ref.read(boardManager.notifier).checkRoundCell(row: row, col: col);
+              // Check Game State
               if (cell.mine) {
-                ref.read(boardManager).gameover = true;
+                ref.read(boardManager).gameOver = true;
               } else if (ref.read(boardManager.notifier).checkWin()) {
-                ref.read(boardManager).goodgame = true;
+                ref.read(boardManager).goodGame = true;
               }
-              refresh();
-            }else{
+              reFresh();
+            }
+            // Click a Flag Cell => Cancel Flag (Covered)
+            else{
               ref.read(boardManager.notifier).changeCell(row: row, col: col, state: cellstate.covered);
-              refresh();
+              reFresh();
             }
           },
           onLongPress: () {
             ref.read(boardManager.notifier).changeCell(row: row, col: col, state: cellstate.flag);
-            refresh();
+            reFresh();
           },
         ),
       );
@@ -95,7 +99,7 @@ class CellWidget extends ConsumerWidget{
             child: const Icon(
               Icons.flag,
               size: 40,
-              color: flagcolor,
+              color: flagColor,
             ),
           )
         ),
@@ -110,15 +114,15 @@ class CellWidget extends ConsumerWidget{
       curve: curve,
       duration: duration,
       child: Container(
-        width: cellwidth, height: cellwidth,
+        width: cellWidth, height: cellWidth,
         decoration: BoxDecoration(
-          color: cellcolor,
+          color: cellColor,
           border: Border.all(
               width: 1,
-              color: cellroundcolor,
+              color: cellRoundColor,
           ),
           borderRadius: const BorderRadius.all(
-              Radius.circular(2),
+              Radius.circular(cellRadius),
           ),
         ),
       ),
@@ -127,9 +131,12 @@ class CellWidget extends ConsumerWidget{
 
   Widget widgetBlank({required Cell cell}){
     return Container(
-      width: cellwidth, height: cellwidth, color: boardcolor,
+      width: cellWidth, height: cellWidth, color: boardColor,
       child: cell.mine
-          ? const Icon(Icons.gps_fixed, color: minecolor)
+          ? const Icon(
+          Icons.gps_fixed,
+          color: mineColor,
+      )
           : numberText(around: cell.around),
     );
   }

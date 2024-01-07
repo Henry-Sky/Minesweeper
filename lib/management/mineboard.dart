@@ -44,16 +44,17 @@ class MineBoard{
     // Return the default mines (required num) first
     if(mines != 0){
       return mines;
-    }
-    var cnt = 0;
-    for(int r = 0;r < rows;r++){
-      for(int c = 0;c < cols;c++){
-        if(board[r][c].mine){
-          cnt += 1;
+    }else {
+      var cnt = 0;
+      for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+          if (board[r][c].mine) {
+            cnt += 1;
+          }
         }
       }
+      return cnt;
     }
-    return cnt;
   }
 
   void randomMine({required num, required clickrow, required clickcol}){

@@ -2,19 +2,19 @@ import 'dart:async';
 
 class GameTimer {
   late final Timer _timer;
-  final int timestart;
-  late int timecnt;
-  final Function refresh;
+  final int timeStart;
+  late int timeCnt;
+  final void Function() reFresh;
 
-  GameTimer({required this.timestart, required this.refresh}) {
-    timecnt = timestart;
+  GameTimer({required this.timeStart, required this.reFresh}) {
+    timeCnt = timeStart;
     _timer = Timer.periodic(const Duration(milliseconds: 1000), (timer) {
-      if (timecnt > 0) {
-        timecnt -= 1;
+      if (timeCnt > 0) {
+        timeCnt -= 1;
       } else {
-        timecnt = 0;
+        timeCnt = 0;
       }
-      refresh();
+      reFresh();
     });
   }
 
@@ -23,16 +23,16 @@ class GameTimer {
   }
 
   String getTime() {
-    int minute = (timecnt / 60).floor();
-    int second = timecnt % 60;
+    int minute = (timeCnt / 60).floor();
+    int second = timeCnt % 60;
     String min = minute < 10 ? '0$minute' : minute.toString();
     String sec = second < 10 ? '0$second' : second.toString();
     return ("$min:$sec");
   }
 
-  String getWintime() {
-    int time = timecnt;
-    time = timestart - time;
+  String getTimeCost() {
+    int time = timeCnt;
+    time = timeStart - time;
     int minute = (time / 60).floor();
     int second = time % 60;
     String min = minute < 10 ? '0$minute' : minute.toString();

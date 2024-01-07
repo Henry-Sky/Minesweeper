@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 
-// UI color
-final modecolor = Colors.green[400];
-final timercolor = Colors.blue[300];
-final backgroundcolor = Colors.indigo[50];
-final boardcolor = Colors.indigo[100];
-final boardroundcolor = Colors.yellow;
+// UI Color
+final modeColor = Colors.green[400];
+final timerColor = Colors.blue[300];
+final backgroundColor = Colors.indigo[50];
+final boardColor = Colors.indigo[100];
+const boardBorderColor = Colors.yellow;
 
-// gameinfo color
-final gameovercolor = Colors.red[600];
-final gameovertextcolor = Colors.blue[900];
-final goodgamecolor = Colors.green[600];
-final goodgametextcolor = Colors.yellow[800];
+// GameInfo Color
+final gameOverColor = Colors.red[600];
+final gameOverTextColor = Colors.blue[900];
+final goodGameColor = Colors.green[600];
+final goodGameTextColor = Colors.yellow[800];
 
-// cell
-final cellcolor = Colors.grey[300];
-const cellroundcolor = Colors.black54;
-const minecolor = Colors.red;
-const flagcolor = Colors.amber;
+// Cell Color
+final cellColor = Colors.grey[300];
+const cellRoundColor = Colors.black54;
+const mineColor = Colors.red;
+const flagColor = Colors.amber;
 
-// cell number color
+// Blank Cell Number Color
 const List<MaterialColor> numcolors = [
   Colors.green,
   Colors.blue,
@@ -31,5 +31,5 @@ const List<MaterialColor> numcolors = [
   Colors.red,
 ];
 
-// error info color
-const errorcolor = Colors.black;
+// Error Info Color
+const errorColor = Colors.redAccent;

@@ -5,32 +5,32 @@ import '../components/cell.dart';
 import '../theme/colors.dart';
 
 class GameBoard extends ConsumerWidget {
-  const GameBoard({super.key, required this.refresh});
-  final void Function() refresh;
+  const GameBoard({super.key, required this.reFresh});
+  final void Function() reFresh;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      width: boardwidth,
-      height: boardheight,
+      width: boardWidth,
+      height: boardHeight,
       decoration: BoxDecoration(
-          color: boardcolor,
+          color: boardColor,
           border: Border.all(
-            color: boardroundcolor,
-            width: borderwidth,
+            color: boardBorderColor,
+            width: borderWidth,
           ),
           borderRadius: const BorderRadius.all(
-              Radius.circular(borderwidth),
+              Radius.circular(cellRadius),
           )
       ),
       child: Stack(
-          children: List.generate(boardrows * boardcols, (i) {
-            var col = i % boardcols;
-            var row = (i / boardcols).floor();
+          children: List.generate(boardRows * boardCols, (i) {
+            var col = i % boardCols;
+            var row = (i / boardCols).floor();
             return Positioned(
-                left: col * cellwidth,
-                top: row * cellwidth,
-                child: CellWidget(row: row, col: col, refresh: refresh),
+                left: col * cellWidth,
+                top: row * cellWidth,
+                child: CellWidget(row: row, col: col, reFresh: reFresh),
             );
           })
       ),
