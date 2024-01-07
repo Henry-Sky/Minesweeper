@@ -64,7 +64,7 @@ class MineBoard{
       var value = Random().nextInt(cols * rows);
       var col = value % cols;
       var row = (value / cols).floor();
-      if(!board[row][col].mine&&!(row == clickrow && col == clickcol)){
+      if(!board[row][col].mine && !(row == clickrow && col == clickcol)){
         board[row][col].mine = true;
         countMine(row: row, col: col); // count as mine created
         cnt += 1;
@@ -73,12 +73,12 @@ class MineBoard{
   }
 
   void countMine({required row, required col}){
-    int beginrow = row - 1 < 0 ? 0 : row - 1;
-    int endrow = row + 1 >= rows ? rows - 1 : row + 1;
-    int begincol = col - 1 < 0 ? 0 : col - 1;
-    int endcol = col + 1 >= cols ? cols - 1 : col + 1;
-    for(int r = beginrow; r <= endrow; r++){
-      for(int c = begincol; c <= endcol; c++){
+    int beginRow = row - 1 < 0 ? 0 : row - 1;
+    int endRow = row + 1 >= rows ? rows - 1 : row + 1;
+    int beginCol = col - 1 < 0 ? 0 : col - 1;
+    int endCol = col + 1 >= cols ? cols - 1 : col + 1;
+    for(int r = beginRow; r <= endRow; r++){
+      for(int c = beginCol; c <= endCol; c++){
         board[r][c].around += 1;
       }
     }
