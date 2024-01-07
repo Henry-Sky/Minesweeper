@@ -15,19 +15,21 @@ final goodgametextcolor = Colors.yellow[800];
 
 // cell
 final cellcolor = Colors.grey[300];
-final cellroundcolor = Colors.black54;
-final minecellcolor = Colors.red[900];
-final flagcellcolor = Colors.yellow[600];
+const cellroundcolor = Colors.black54;
+const minecolor = Colors.red;
+const flagcolor = Colors.amber;
 
 // cell number color
-const num1color = Colors.green;
-const num2color = Colors.blue;
-const num3color = Colors.orange;
-const num4color = Colors.purple;
-const num5color = Colors.brown;
-const num6color = Colors.amber;
-const num7color = Colors.black;
-const num8color = Colors.red;
+const List<MaterialColor> numcolors = [
+  Colors.green,
+  Colors.blue,
+  Colors.orange,
+  Colors.purple,
+  Colors.brown,
+  Colors.amber,
+  Colors.blueGrey,
+  Colors.red,
+];
 
 // error info color
 const errorcolor = Colors.black;

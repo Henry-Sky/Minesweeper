@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'components/gameinfo.dart';
 import 'management/gamelogic.dart';
 import 'components/board.dart';
+import "package:flutter/foundation.dart";
 import 'management/gametimer.dart';
 import 'theme/colors.dart';
 
@@ -14,16 +15,17 @@ class MineSweeper extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _MineSweeperState();
 }
 
-class _MineSweeperState extends ConsumerState<MineSweeper>
-    with TickerProviderStateMixin {
-  late var timer;
+class _MineSweeperState extends ConsumerState<MineSweeper> {
+  late GameTimer timer;
 
   void updateGame() {
     setState(() {
       if (kDebugMode) {
-        logger.log(Level.debug, "global refresh!");
         ref.read(boardManager).gameover
             ? logger.log(Level.info, "Game Over!")
+            : null;
+        ref.read(boardManager).goodgame
+            ? logger.log(Level.info, "Good Game!")
             : null;
       }
     });
@@ -34,7 +36,7 @@ class _MineSweeperState extends ConsumerState<MineSweeper>
       ref.read(boardManager.notifier).initGame();
       // ReCreate Timer When Game Reset
       timer.stopTimer();
-      timer = GameTimer(time: 180, refresh: updateGame);
+      timer = GameTimer(timestart: 180, refresh: updateGame);
     });
   }
 
@@ -43,20 +45,24 @@ class _MineSweeperState extends ConsumerState<MineSweeper>
     super.initState();
     ref.read(boardManager.notifier).initGame();
     // Create Timer
-    timer = GameTimer(time: 180, refresh: updateGame);
+    timer = GameTimer(timestart: 180, refresh: updateGame);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("MineSweeper"),
+          title: const Text(
+              "MineSweeper",
+          ),
           actions: [
             IconButton(
               onPressed: () {
                 resetGame();
               },
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(
+                  Icons.refresh,
+              ),
             )
           ],
         ),
@@ -74,7 +80,7 @@ class _MineSweeperState extends ConsumerState<MineSweeper>
               children: [
                 // reset button
                 Container(
-                    width: (boardcols * cellwidth + borderwidth * 2) / 2,
+                    width: boardwidth / 2,
                     height: 22,
                     decoration: BoxDecoration(
                         color: modecolor,
@@ -82,14 +88,16 @@ class _MineSweeperState extends ConsumerState<MineSweeper>
                             topLeft:
                                 Radius.circular(cellwidth / cellroundscale),
                             bottomLeft:
-                                Radius.circular(cellwidth / cellroundscale))),
+                                Radius.circular(cellwidth / cellroundscale),
+                        ),
+                    ),
                     child: const Text(
                       "Level: Easy",
                       textAlign: TextAlign.center,
                     )),
                 // The Timer
                 Container(
-                    width: (boardcols * cellwidth + borderwidth * 2) / 2,
+                    width: boardwidth / 2,
                     height: 22,
                     decoration: BoxDecoration(
                         color: timercolor,
@@ -97,9 +105,11 @@ class _MineSweeperState extends ConsumerState<MineSweeper>
                             topRight:
                                 Radius.circular(cellwidth / cellroundscale),
                             bottomRight:
-                                Radius.circular(cellwidth / cellroundscale))),
+                                Radius.circular(cellwidth / cellroundscale),
+                        ),
+                    ),
                     child: Text(
-                      "Timer: " + timer.getTime(),
+                      "Timer: ${timer.getTime()}",
                       textAlign: TextAlign.center,
                     )),
               ],
