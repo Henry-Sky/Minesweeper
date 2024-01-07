@@ -53,7 +53,7 @@ class _MinesweeperState extends ConsumerState<Minesweeper> {
     return Scaffold(
         appBar: AppBar(
           title: const Text(
-              "MineSweeper",
+              "Minesweeper",
           ),
           actions: [
             IconButton(
