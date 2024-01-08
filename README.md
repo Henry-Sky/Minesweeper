@@ -1,6 +1,6 @@
 # minesweeper
 
-A new Flutter project.
+A Minesweeper Game Powered by Flutter.
 
 ## Getting Started
 
