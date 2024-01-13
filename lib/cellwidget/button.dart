@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../management/mineboard.dart';
+import '../management/cellstate.dart';
 import '../management/gamelogic.dart';
+import '../theme/colors.dart';
 
-class CellButton extends ConsumerWidget{
-  const CellButton({super.key, required this.cell, required this.coverVisible, required this.flagVisible, required this.refresh});
+class CellButton extends ConsumerWidget {
+  const CellButton({
+    super.key,
+    required this.cell,
+    required this.coverVisible,
+    required this.flagVisible,
+    required this.refresh,
+  });
+
   final Cell cell;
   final bool coverVisible;
   final bool flagVisible;
@@ -12,37 +20,49 @@ class CellButton extends ConsumerWidget{
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if(coverVisible){
-      return SizedBox(
-        width: cellWidth, height: cellWidth,
-        child: MaterialButton(
-          onPressed: () {
-            // Click a Cover Cell => Blank
-            if(!flagVisible){
-              ref.read(boardManager.notifier).changeCell(cell: cell, state: CellState.blank);
-              ref.read(boardManager.notifier).checkRoundCell(checkCell: cell);
-              // Check Game State
-              if (cell.mine) {
-                ref.read(boardManager).gameOver = true;
-              } else if (ref.read(boardManager.notifier).checkWin()) {
-                ref.read(boardManager).goodGame = true;
-              }
-              refresh();
-            }
-            // Click a Flag Cell => Cancel Flag (Covered)
-            else{
-              ref.read(boardManager.notifier).changeCell(cell: cell, state: CellState.covered);
-              refresh();
-            }
-          },
-          onLongPress: () {
-            ref.read(boardManager.notifier).changeCell(cell: cell, state: CellState.flag);
-            refresh();
-          },
-        ),
-      );
-    }else{
-      return const SizedBox.shrink();
-    }
+    final manager = ref.read(boardManager.notifier);
+    final screen = ref.read(boardManager).screen;
+    final cellWidth = screen.getCellWidth();
+    return !(cell.state == CellState.blank && cell.minesAround == 0)
+        ? Container(
+          width: cellWidth,
+          height: cellWidth,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(
+                Radius.circular(screen.getBoardRadius()),
+            )
+          ),
+          child: InkWell(
+            radius: screen.getBoardRadius(),
+            highlightColor: Colors.transparent,
+            splashColor: !coverVisible ? Colors.transparent : coverColor,
+            onTap: !coverVisible
+                ? null
+                : () {
+                    // Click a Cover Cell => Blank
+                    if (!flagVisible) {
+                      manager.dig(cell: cell);
+                    } else {
+                      // Click a Flag Cell => Cancel Flag (Covered)
+                      manager.removeFlag(cell: cell);
+                    }
+                    refresh();
+                  },
+            onDoubleTap: coverVisible
+                ? null
+                : () {
+                    manager.digAroundBesidesFlagged(cell: cell);
+                    manager.flagRestCovered(cell: cell);
+                    refresh();
+                  },
+            onLongPress: !coverVisible
+                ? null
+                : () {
+                    manager.toggleFlag(cell: cell);
+                    refresh();
+                  },
+          ),
+        )
+        : const SizedBox.shrink();
   }
 }

@@ -12,18 +12,31 @@ class GameBoard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final screen = ref.read(boardManager).screen;
+    final boardRows = ref.read(boardManager).mode.gameRows;
+    final boardCols = ref.read(boardManager).mode.gameCols;
+    final borderWidth = screen.getBorderWidth();
+    final cellWidth = screen.getCellWidth();
+    final boardRadius = screen.getBoardRadius();
+
     return AnimatedContainer(
-      width: boardWidth,
-      height: boardHeight,
+      width: screen.getBoardSize().width,
+      height: screen.getBoardSize().height,
       decoration: BoxDecoration(
           color: boardColor,
           border: Border.all(
-            color: timer.checkHalfTime() ? crazyColor : boardBorderColor,
+            color: timer.checkValueTime(val: 30)
+                ? (timer.checkValueTime(val: 10)
+                ? crazyColor
+                : (timer.getTimerValue() % 2 == 0
+                ? crazyColor
+                : boardBorderColor))
+                : boardBorderColor,
             width: borderWidth,
           ),
-          borderRadius: const BorderRadius.all(
-              Radius.circular(cellRadius),
-          )
+          borderRadius: BorderRadius.all(
+              Radius.circular(boardRadius),
+          ),
       ),
       duration: Durations.extralong4,
       child: Stack(
